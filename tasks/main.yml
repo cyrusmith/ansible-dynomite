@@ -28,3 +28,32 @@
   args:
     chdir: /usr/local/src/dynomite-{{ dynomitedb_version }}
     creates: /usr/local/src/dynomite-{{ dynomitedb_version }}/src/dynomite
+
+- name: create dynomitedb install directory
+  file:
+    path: "{{ dynomitedb_install_dir }}"
+    state: directory
+
+- name: Copy dynomitedb to install directory
+  command: cp /usr/local/src/dynomite-{{ dynomitedb_version }}/src/dynomite {{ dynomitedb_install_dir }}
+  args:
+    creates: "{{ dynomitedb_install_dir }}/dynomite"
+
+- name: add dynomitedb user
+  user:
+    name: "{{ dynomitedb_user }}"
+    comment: "DynomiteDB"
+    home: "{{ dynomitedb_install_dir }}"
+    shell: /bin/false
+    system: yes
+
+- name: create /etc/dynomitedb
+  file:
+    path: /etc/dynomitedb
+    state: directory
+
+- name: create /var/run/dynomitedb
+  file:
+    path: /var/run/dynomitedb
+    state: directory
+    owner: "{{ dynomitedb_user }}"
