@@ -1,0 +1,60 @@
+---
+- name: download sources
+  get_url:
+    url: "{{ dynomitedb_dynomite_download_url }}"
+    dest: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}.zip
+
+- name: extract dynomitedb archive
+  unarchive:
+    src: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}.zip
+    dest: /usr/local/src
+    creates: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/Makefile.am
+    copy: no
+
+- name: autoreconf dynomite
+  command: autoreconf -fvi
+  args:
+    chdir: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}
+    creates: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/configure
+
+- name: configure dynomite
+  command: ./configure --enable-debug=log
+  args:
+    chdir: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}
+    creates: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/Makefile
+
+- name: compile dynomite
+  command: make
+  args:
+    chdir: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}
+    creates: /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/src/dynomite
+
+- name: create dynomite install directory
+  file:
+    path: "{{ dynomitedb_dynomite_install_dir }}"
+    state: directory
+
+- name: Copy dynomite to install directory
+  command: cp /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/src/dynomite {{ dynomitedb_dynomite_install_dir }}
+  args:
+    creates: "{{ dynomitedb_dynomite_install_dir }}/dynomite"
+
+- name: add dynomite user
+  user:
+    name: "{{ dynomitedb_dynomite_user }}"
+    comment: "DynomiteDB"
+    home: "{{ dynomitedb_dynomite_install_dir }}"
+    shell: /bin/false
+    system: yes
+
+- name: create dynomitedb conf directory
+  file:
+    path: "{{ dynomitedb_dynomite_conf_dir }}"
+    owner: "{{ dynomitedb_dynomite_user }}"
+    state: directory
+
+- name: create dynomite config file
+  template:
+    src: dynomite.yml.j2
+    dest: "{{ dynomitedb_dynomite_conf_dir }}/dynomite.yml"
+    owner: "{{ dynomitedb_dynomite_user }}"

@@ -1,0 +1,60 @@
+---
+- name: enable overcommit in sysctl
+  sysctl:
+    name: vm.overcommit_memory
+    value: 1
+    state: present
+    reload: yes
+    ignoreerrors: yes
+
+- name: download redis
+  get_url:
+    url: "{{ dynomitedb_redis_download_url }}"
+    dest: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz
+
+- name: upload redis
+  copy:
+    src: "{{ dynomitedb_redis_download_url }}"
+    dest: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz
+
+- name: extract redis tarball
+  unarchive:
+    src: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz
+    dest: /usr/local/src
+    creates: /usr/local/src/redis-{{ dynomitedb_redis_version }}/Makefile
+    copy: no
+
+- name: compile redis
+  command: make -j{{ ansible_processor_cores + 1 }}
+  args:
+    chdir: /usr/local/src/redis-{{ dynomitedb_redis_version }}
+    creates: /usr/local/src/redis-{{ dynomitedb_redis_version }}/src/redis-server
+
+- name: create redis install directory
+  file:
+    path: "{{ dynomitedb_redis_install_dir }}"
+    state: directory
+
+- name: Copy redis-server to install directory
+  command: cp /usr/local/src/redis-{{ dynomitedb_redis_version }}/src/redis-server {{ dynomitedb_redis_install_dir }}
+  args:
+    creates: "{{ dynomitedb_redis_install_dir }}/redis-server"
+
+- name: add redis user
+  user:
+    name: "{{ dynomitedb_redis_user }}"
+    comment: "Redis"
+    home: "{{ dynomitedb_redis_install_dir }}"
+    shell: /bin/false
+    system: yes
+
+- name: create redis conf directory
+  file:
+    path: "{{ dynomitedb_redis_conf_dir }}"
+    state: directory
+
+- name: create dynomite config file
+  template:
+    src: redis.conf.j2
+    dest: "{{ dynomitedb_redis_conf_dir }}/redis.conf"
+    owner: "{{ dynomitedb_redis_user }}"
