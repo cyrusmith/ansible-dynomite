@@ -1,10 +1,10 @@
 dyn_o_mite:
   dyn_listen: {{ dynomitedb_dynomite_dyn_listen_address }}:{{ dynomitedb_dynomite_dyn_listen_port }}
   data_store: {{ dynomitedb_dynomite_data_store }}
-  listen: {{ dynomitedb_dynomite_dyn_listen_address }}:{{ dynomitedb_dynomite_dyn_listen_port }}
+  listen: {{ dynomitedb_dynomite_dyn_listen_address }}:{{ dynomitedb_dynomite_listen_port }}
   dyn_seed_provider: {{ dynomitedb_dynomite_seed_provider }}
   servers:
 {% for server in dynomitedb_dynomite_servers %}
-    - {{ server.address }}:{{ server.port }}: {{ loop.index }}
+  - {{ server.address }}:{{ server.port }}:{{ loop.index }}
 {% endfor %}
   tokens: {{ dynomitedb_dynomite_tokens }}

@@ -12,11 +12,6 @@
     url: "{{ dynomitedb_redis_download_url }}"
     dest: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz
 
-- name: upload redis
-  copy:
-    src: "{{ dynomitedb_redis_download_url }}"
-    dest: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz
-
 - name: extract redis tarball
   unarchive:
     src: /usr/local/src/redis-{{ dynomitedb_redis_version }}.tar.gz

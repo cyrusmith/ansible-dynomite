@@ -1,11 +1,12 @@
 ---
 dynomitedb_dynomite_version: dev
-dynomitedb_dynomite_download_url: https://github.com/Netflix/dynomite/archive/{{ dynomitedb_version }}.zip
+dynomitedb_dynomite_download_url: https://github.com/Netflix/dynomite/archive/{{ dynomitedb_dynomite_version }}.zip
 dynomitedb_dynomite_install_dir: /opt/dynomitedb/dynomite
 dynomitedb_dynomite_conf_dir: "{{ dynomitedb_dynomite_install_dir }}/conf"
 dynomitedb_dynomite_user: dynomite
 dynomitedb_dynomite_dyn_listen_address: 127.0.0.1
 dynomitedb_dynomite_dyn_listen_port: 8101
+dynomitedb_dynomite_tokens: 0
 
 dynomitedb_dynomite_data_store: 0 # 0 - redis, 1 - memcached
 dynomitedb_dynomite_listen_address: 127.0.0.1
@@ -15,11 +16,14 @@ dynomitedb_dynomite_servers: # underlying storage (redis or memcached) connecrti
   - address: 127.0.0.1
     port: 22122
 
-dynomitedb_redis_version: 2.8.9
-dynomitedb_redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+dynomitedb_redis_version: 3.2.1
+dynomitedb_redis_download_url: "http://download.redis.io/releases/redis-{{ dynomitedb_redis_version }}.tar.gz"
 dynomitedb_redis_install_dir: /opt/dynomitedb/redis
 dynomitedb_redis_conf_dir: "{{ dynomitedb_redis_install_dir }}/conf"
 
 dynomitedb_redis_user: redis
 dynomitedb_redis_group: "{{ dynomitedb_redis_user }}"
-dynomitedb_redis_dir: /var/lib/redis/{{ redis_port }}
+dynomitedb_redis_bind: 127.0.0.1
+dynomitedb_redis_port: 22122
+dynomitedb_redis_logfile: "\"\""
+dynomitedb_redis_dir: ./

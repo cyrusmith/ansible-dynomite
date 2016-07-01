@@ -1,14 +1,14 @@
-bind 127.0.0.1
+bind {{ dynomitedb_redis_bind }}
 protected-mode yes
-port 6379 # TODO
+port {{ dynomitedb_redis_port }}
 tcp-backlog 511
 timeout 0
 tcp-keepalive 300
 daemonize yes
 supervised no
-pidfile /var/run/redis_6379.pid # TODO
+pidfile /var/run/redis_{{ dynomitedb_redis_port }}.pid
 loglevel notice
-logfile "" # TODO
+logfile {{ dynomitedb_redis_logfile }}
 # syslog-enabled no
 # syslog-ident redis
 # syslog-facility local0
@@ -20,7 +20,7 @@ stop-writes-on-bgsave-error yes
 rdbcompression yes
 rdbchecksum yes
 dbfilename dump.rdb
-dir ./ # TODO
+dir {{ dynomitedb_redis_dir }}
 slave-serve-stale-data yes
 slave-read-only yes
 repl-diskless-sync no
@@ -39,10 +39,10 @@ slave-priority 100
 # maxmemory <bytes>
 # maxmemory-policy noeviction
 # maxmemory-samples 5
-lazyfree-lazy-eviction no
-lazyfree-lazy-expire no
-lazyfree-lazy-server-del no
-slave-lazy-flush no
+# lazyfree-lazy-eviction no
+# lazyfree-lazy-expire no
+# lazyfree-lazy-server-del no
+# slave-lazy-flush no
 appendonly no
 appendfilename "appendonly.aof"
 # appendfsync always
@@ -54,7 +54,7 @@ auto-aof-rewrite-min-size 64mb
 aof-load-truncated yes
 lua-time-limit 5000
 # cluster-enabled yes
-# cluster-config-file nodes-6379.conf
+# cluster-config-file nodes-{{ dynomitedb_redis_port }}.conf
 # cluster-node-timeout 15000
 # cluster-slave-validity-factor 10
 # cluster-migration-barrier 1

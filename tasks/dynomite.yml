@@ -58,3 +58,21 @@
     src: dynomite.yml.j2
     dest: "{{ dynomitedb_dynomite_conf_dir }}/dynomite.yml"
     owner: "{{ dynomitedb_dynomite_user }}"
+
+- name: Copy dynomite.pem
+  copy:
+    src: "{{ role_path }}/files/dynomite.pem"
+    dest: "{{ dynomitedb_dynomite_conf_dir }}"
+    owner: "{{ dynomitedb_dynomite_user }}"
+
+- name: Copy recon_iv.pem
+  copy:
+    src: "{{ role_path }}/files/dynomite_recon_iv.pem"
+    dest: "{{ dynomitedb_dynomite_conf_dir }}/recon_iv.pem"
+    owner: "{{ dynomitedb_dynomite_user }}"
+
+- name: Copy recon_iv.pem
+  copy:
+    src: "{{ role_path }}/files/dynomite_recon_key.pem"
+    dest: "{{ dynomitedb_dynomite_conf_dir }}/recon_key.pem"
+    owner: "{{ dynomitedb_dynomite_user }}"
