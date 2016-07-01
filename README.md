@@ -1,7 +1,7 @@
-Ansible-dynomitedb
+Ansible-dynomite
 =========
 
-Installs [dynomitedb](http://www.dynomitedb.com/).
+Installs [dynomite](http://www.dynomitedb.com/).
 
 Currently this is WIP. Only redis as underlying datastore is supported at the moment.
 
