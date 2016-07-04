@@ -1,0 +1,58 @@
+# follow instructions http://www.eclipse.org/jetty/documentation/9.4.x/startup-unix-service.html
+---
+- name: download jetty
+  get_url:
+    url: "{{ dynomitedb_manager_jetty_download_url }}"
+    dest: /usr/local/src/jetty-{{ dynomitedb_manager_jetty_version }}.tar.gz
+
+- name: create jetty home directory
+  file:
+    path: "{{ dynomitedb_manager_jetty_home_dir }}"
+    state: directory
+
+- name: extract jetty
+  unarchive:
+    src: "/usr/local/src/jetty-{{ dynomitedb_manager_jetty_version }}.tar.gz"
+    dest: "/usr/local/src"
+    creates: "/usr/local/src/jetty-{{ dynomitedb_manager_jetty_version }}/start.jar"
+    copy: no
+
+- name: copy jetty to home dir
+  shell: "cp -rf /usr/local/src/jetty-*{{ dynomitedb_manager_jetty_version }}/* {{ dynomitedb_manager_jetty_home_dir }}"
+  args:
+    creates: "{{ dynomitedb_manager_jetty_home_dir }}/start.jar"
+
+- name: create jetty temp directory
+  file:
+    path: "{{ dynomitedb_manager_jetty_home_dir }}/temp"
+    state: directory
+
+- name: copy jetty init script
+  command: "cp {{ dynomitedb_manager_jetty_home_dir }}/bin/jetty.sh /etc/init.d/jetty"
+  args:
+    creates: "/etc/init.d/jetty"
+
+- name: add jetty user
+  user:
+    name: "{{ dynomitedb_manager_jetty_user }}"
+    comment: "Jetty"
+    home: "{{ dynomitedb_manager_jetty_home_dir }}/temp"
+    shell: /bin/false
+    system: yes
+
+- name: chown jetty home dir
+  file:
+    path: "{{ dynomitedb_manager_jetty_home_dir }}"
+    owner: "{{ dynomitedb_manager_jetty_user }}"
+    group: "{{ dynomitedb_manager_jetty_user }}"
+    recurse: yes
+    state: directory
+
+- name: create jetty config file
+  template:
+    src: jetty.conf.j2
+    dest: "/etc/default/jetty"
+    owner: "{{ dynomitedb_manager_jetty_user }}"
+
+- name: start jetty
+  service: name=jetty state=started

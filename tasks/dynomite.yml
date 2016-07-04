@@ -76,3 +76,8 @@
     src: "{{ role_path }}/files/dynomite_recon_key.pem"
     dest: "{{ dynomitedb_dynomite_conf_dir }}/recon_key.pem"
     owner: "{{ dynomitedb_dynomite_user }}"
+
+- name: Copy control scripts
+  shell: cp /usr/local/src/dynomite-{{ dynomitedb_dynomite_version }}/bin/* {{ dynomitedb_dynomite_install_dir }}
+  args:
+    creates: "{{ dynomitedb_dynomite_install_dir }}/launch_dynomite.sh"

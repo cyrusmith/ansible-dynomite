@@ -1,0 +1,18 @@
+---
+- name: clone dynomite-namager repo
+  git:
+    repo: "{{ dynomitedb_manager_repo }}"
+    dest: /usr/local/src/dynomitedb-manager
+
+- name: checkout dynomite-namager to the branch
+  shell: "cd /usr/local/src/dynomitedb-manager && git checkout {{ dynomitedb_manager_branch }}"
+
+- name: build dynomite-manager
+  shell: cd /usr/local/src/dynomitedb-manager && ./gradlew build
+  args:
+    creates: /usr/local/src/dynomitedb-manager/dynomitemanager-web/build/libs/dynomitemanager-web-*.war
+
+- name: deploy dynomite-manager
+  shell: "cp /usr/local/src/dynomitedb-manager/dynomitemanager-web/build/libs/dynomitemanager-web-*.war {{ dynomitedb_manager_jetty_home_dir }}/webapps/ROOT.war"
+  args:
+    creates: "{{ dynomitedb_manager_jetty_home_dir }}/webapps/ROOT.war"

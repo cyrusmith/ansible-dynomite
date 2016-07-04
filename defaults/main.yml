@@ -27,3 +27,12 @@ dynomitedb_redis_bind: 127.0.0.1
 dynomitedb_redis_port: 22122
 dynomitedb_redis_logfile: "\"\""
 dynomitedb_redis_dir: ./
+
+dynomitedb_manager_jetty_version: 9.3.10.v20160621
+dynomitedb_manager_jetty_download_url: http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/{{ dynomitedb_manager_jetty_version }}/jetty-distribution-{{ dynomitedb_manager_jetty_version }}.tar.gz
+dynomitedb_manager_jetty_home_dir: /opt/dynomitedb/jetty
+dynomitedb_manager_jetty_user: jetty
+dynomitedb_manager_port: 8080
+
+dynomitedb_manager_repo: https://github.com/Netflix/dynomite-manager.git
+dynomitedb_manager_branch: dev

@@ -2,3 +2,5 @@
 - include: deps.yml
 - include: redis.yml
 - include: dynomite.yml
+- include: jetty.yml
+- include: dynomite-manager.yml
